@@ -1,0 +1,42 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat with GPT{% endblock %}
+
+{% block body %}
+<div class=" col-4 offset-4 bg-dark text-light p-4">
+    <h1 class="text-center">Chat with GPT</h1>
+    {% for message in historique|reverse %}
+        <p>
+        {% if message.role == "user" %}
+            <i class="fa-regular fa-user"></i>
+        {% elseif message.role == "assistant" %}
+            <i class="fa-solid fa-paper-plane"></i>
+        {% endif %}
+            {{ message.createdAt|date("m/d/Y H:i:s")}}
+        </p>
+        <p>
+            {{ message.content}}
+        </p>
+    {% endfor %}
+
+    {{ form_start(form) }}
+    <div class="d-flex justify-content-center">
+    {{ form_widget(form.userInput) }}
+    {{ form_row(form.submit) }}
+    </div>
+    {{ form_end(form) }}
+    
+
+</div>
+<script>
+document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+ console.log(event.target);
+});
+
+
+
+</script>
+{% endblock %}
