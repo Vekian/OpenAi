@@ -13,9 +13,12 @@ class OpenAiType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('userInput', TextareaType::class)
+        ->add('userInput', TextareaType::class, [
+            'attr' => ['class' => 'w-100']
+        ])
         ->add('submit', SubmitType::class, [
             'label' => 'Ask',
+            'attr' => ['class' => 'btn btn-dark btn-outline-warning p-4 ps-5 pe-5']
         ]);
     }
 

@@ -4,9 +4,11 @@
 {% block title %}Chat with GPT{% endblock %}
 
 {% block body %}
-<div class=" col-4 offset-4 bg-dark text-light p-4">
-    <h1 class="text-center">Chat with GPT</h1>
+<div class=" col-6 offset-3 bg-dark text-light p-4">
+    <h1 class="text-center pb-3">Chat with GPT</h1>
+    <div id="listMessage">
     {% for message in historique|reverse %}
+    <div class="border p-2">
         <p>
         {% if message.role == "user" %}
             <i class="fa-regular fa-user"></i>
@@ -18,8 +20,9 @@
         <p>
             {{ message.content}}
         </p>
+        </div>
     {% endfor %}
-
+    </div>
     {{ form_start(form) }}
     <div class="d-flex justify-content-center">
     {{ form_widget(form.userInput) }}
@@ -30,10 +33,30 @@
 
 </div>
 <script>
-document.querySelector('form').addEventListener('submit', function(event) {
+let listMessage = document.getElementById('listMessage');
+ document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault();
 
- console.log(event.target);
+    fetch(this.action, {
+        body: new FormData(event.target),
+        method: 'POST'
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('open_ai_userInput').value = "";
+            listMessage.innerHTML = "";
+            for (let elmData of data) {
+            if (elmData.role === "assistant") {
+                listMessage.innerHTML += "<p><i class='fa-solid fa-paper-plane pe-2'></i> " + elmData.createdAt + "</p><p>" + elmData.content + "</p>";
+            }
+            else if (elmData.role === "user"){
+                listMessage.innerHTML += "<p><i class='fa-regular fa-user pe-2'></i> " + elmData.createdAt + "</p><p>" + elmData.content + "</p>";
+            };}
+            
+        })
+        .catch(error => {
+        console.error('Erreur lors de la requête Fetch :', error);
+    });
 });
 
 
